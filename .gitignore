@@ -1,3 +1,81 @@
-# Ignorar la carpeta results y todo su contenido
-deteccion de emojis/results/
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyd
+*.pyo
+*.egg-info/
+.pytest_cache/
+
+# Virtual environments
+.venv-slm-pill/
+venv/
+env/
+.env/
+*/.venv/
+*/venv/
+*/env/
+*/.env/
+
+# IDE-specific files
+.idea/                  # PyCharm
+.vscode/                # VS Code
+*.sublime-project
+*.sublime-workspace
+*.komodoproject
+*.komodoworkspace
+
+# Operating System files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Logs and data
+*.log
+*.sqlite3
+*.db
+
+# Machine Learning / Hugging Face specific
+# Directories for model checkpoints, logs, and saved models
 results/
+logs/
+fine_tuned_sentiment_model/
+checkpoint-*/
+
+# Hugging Face cache directories (often large)
+# These are usually in ~/.cache/huggingface or similar, but good to include if they end up in project
+.cache/
+hf_cache/
+huggingface/
+
+# Datasets (if downloaded into the project directory)
+data/
+datasets/
+*.csv
+*.tsv
+*.json
+*.parquet
+*.arrow
+
+# Jupyter Notebook files
+.ipynb_checkpoints/
+*.ipynb
+
+# Temporary files
+*~
+*.bak
+*.swp
+*.swo
+*.tmp
+*.temp
+
+# Distribution / build files
+dist/
+build/
+*.egg
+*.whl
+
+# Miscellaneous
+.project
+.settings
+.classpath
