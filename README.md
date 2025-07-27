@@ -1,4 +1,4 @@
-🚀 Comparador de Modelos de Sentimiento: SLM vs LLM 🧠
+# 🚀 Comparador de Modelos de Sentimiento: SLM vs LLM 🧠
 
 ![Banner del Proyecto](assets/banner.png)
 
@@ -293,5 +293,5 @@ Este proyecto está bajo la Licencia MIT. Consulta el archivo LICENSE para más 
 
 ¿Preguntas o sugerencias? No dudes en contactarme:
 
-  * Tu Nombre/Alias: [Tu Nombre o Alias]
-  * GitHub: Tu Perfil de GitHub (https://github.com/tu_usuario)
+  * Nombre: Juan domingo
+  * GitHub: (https://github.com/jdomdev)
