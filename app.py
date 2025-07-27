@@ -56,19 +56,6 @@ def query_local_model(review):
         return f"Error durante la predicción: {e}"
 
 # --- 3. LLM vía InferenceClient ---
-# Modelos recomendados gratuitos (puedes probar con InferenceClient):
-# ----------------------------------------------------------------------------
-# Modelo	                                Tamaño	        Destacado por
-# ----------------------------------------------------------------------------
-# HuggingFaceH4/zephyr-7b-beta	            7B	            Muy bueno para tareas generales
-# meta-llama/Meta-Llama-3-8B-Instruct	    8B	            Preciso y multilingüe
-# ----------------------------------------------------------------------------
-# mistralai/Mistral-7B-Instruct-v0.2	    7B	            Rápido y versátil
-# Qwen/Qwen1.5-7B-Chat	                    7B	            Buen manejo de instrucciones
-# NousResearch/Nous-Hermes-2-Mistral-7B-DPO	7B	            Instruct-tuned
-# openchat/openchat-3.5-0106	            ChatGPT-like	Responde bien a instrucciones
-# ----------------------------------------------------------------------------
-
 llm_model_info = """
 | Modelo                                             | Tamaño   | Instrucción / Chat | Arquitectura Base  | Destacado por |
 |----------------------------------------------------|----------|--------------------|--------------------|---------------|
@@ -87,7 +74,7 @@ llm_model_info = """
 | databricks/dolly-v2-3b                             | 3B       | Sí (Instruct)      | GPT-J              | Simplicidad y fine-tuning open-source para instruct |
 """
 
-LLM_MODEL = "HuggingFaceH4/zephyr-7b-beta"
+LLM_MODEL = "meta-llama/Meta-Llama-3-8B-Instruct"
 
 @st.cache_resource
 def get_inference_client():
@@ -151,5 +138,5 @@ if st.button("Analizar Sentimiento", type="primary"):
                 llm_result = query_llm_api(user_input)
                 st.markdown(f"{llm_result}")
 
-st.markdown(f"### Modelos LLM recomendados:\n{llm_model_info}")                
+# st.markdown(f"### Modelos LLM recomendados:\n{llm_model_info}")                
         
