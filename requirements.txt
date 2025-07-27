@@ -4,3 +4,4 @@ evaluate
 scikit-learn
 accelerate
 streamlit
+openai
