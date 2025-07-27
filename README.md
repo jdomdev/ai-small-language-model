@@ -291,7 +291,9 @@ Este proyecto está bajo la Licencia MIT. Consulta el archivo LICENSE para más 
 
 📧 Contacto
 
-¿Preguntas o sugerencias? No dudes en contactarme:
-
-  * Nombre: Juan domingo
+¿Preguntas o sugerencias? No dudes en contactarnos:
+  * Autor: Juan Carlos Macías
+  * Github: ((https://github.com/juancmacias)
+    
+  * Autor: Juan domingo
   * GitHub: (https://github.com/jdomdev)
