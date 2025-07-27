@@ -15,6 +15,8 @@ except NameError:
     SCRIPT_DIR = os.getcwd()
 
 MODEL_PATH = os.path.join(SCRIPT_DIR, "fine_tuned_sentiment_model_full_data")
+# Cargar el token de Hugging Face
+HF_TOKEN = os.environ.get("HF_TOKEN")
 
 # --- 2. Carga del Modelo Local (SLM) ---
 @st.cache_resource
@@ -66,8 +68,26 @@ def query_local_model(review):
 # NousResearch/Nous-Hermes-2-Mistral-7B-DPO	7B	            Instruct-tuned
 # openchat/openchat-3.5-0106	            ChatGPT-like	Responde bien a instrucciones
 # ----------------------------------------------------------------------------
+
+llm_model_info = """
+| Modelo                                             | Tamaño   | Instrucción / Chat | Arquitectura Base  | Destacado por |
+|----------------------------------------------------|----------|--------------------|--------------------|---------------|
+| meta-llama/Meta-Llama-3-8B-Instruct                | 8B       | Sí (Instruct)      | LLaMA 3            | Calidad alta en tareas de reasoning, uso general |
+| HuggingFaceH4/zephyr-7b-beta                       | 7B       | Sí (Chat)          | Mistral-like       | Fluidez conversacional y rendimiento notable con prompts |
+| mistralai/Mistral-7B-Instruct-v0.2                 | 7B       | Sí (Instruct)      | Mistral            | Precisión y velocidad, muy versátil en tareas NLP |
+| Qwen/Qwen1.5-7B-Chat                               | 7B       | Sí (Chat)          | Qwen               | Buen rendimiento multilingüe y contextualización |
+| NousResearch/Nous-Hermes-2-Mistral-7B-DPO          | 7B       | Sí (Chat/Instruct) | Mistral            | Ajustado con DPO, enfoque en calidad de respuestas |
+| openchat/openchat-3.5-0106                         | ~7B      | Sí (Chat)          | Mixtral/OpenChat   | Fine-tuned para alineación, estilo ChatGPT 3.5 |
+| google/gemma-2b-it                                 | 2B       | Sí (Instruct)      | Gemma              | Ligero y eficiente, ideal para recursos limitados |
+| lmsys/vicuna-7b-v1.5                               | 7B       | Sí (Chat)          | LLaMA 1 finetuned  | Alineado con diálogo humano, estilo GPT-like |
+| OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5     | 12B      | Sí (Chat)          | Pythia             | Entrenado colaborativamente, énfasis en transparencia |
+| stabilityai/stablelm-tuned-alpha-3b                | 3B       | Sí (Chat-like)     | StableLM           | Pequeño y rápido, código abierto accesible |
+| TinyLlama/TinyLlama-1.1B-Chat-v1.0                 | 1.1B     | Sí (Chat)          | TinyLlama          | Ultra compacto, ideal para dispositivos locales |
+| tiiuae/falcon-7b-instruct                          | 7B       | Sí (Instruct)      | Falcon             | Rendimiento robusto, fuerte comprensión de tareas |
+| databricks/dolly-v2-3b                             | 3B       | Sí (Instruct)      | GPT-J              | Simplicidad y fine-tuning open-source para instruct |
+"""
+
 LLM_MODEL = "HuggingFaceH4/zephyr-7b-beta"
-HF_TOKEN = os.environ.get("HF_TOKEN")
 
 @st.cache_resource
 def get_inference_client():
@@ -100,9 +120,9 @@ def query_llm_api(review):
 st.set_page_config(layout="wide")
 st.title("Comparador de Modelos de Sentimiento: SLM vs LLM")
 
-st.info("""
-Introduce una reseña de película en inglés para comparar el rendimiento de un modelo pequeño y eficiente (DistilBERT, local) 
-contra un modelo de lenguaje grande (Zephyr 7B, en la nube).
+st.info(f"""
+Introduce una reseña de película en inglés para comparar el rendimiento de un modelo pequeño y eficiente (DistilBERT, local)  
+contra un modelo de lenguaje grande LLM **{LLM_MODEL}**, en la nube.
 """)
 
 user_input = st.text_area(
@@ -123,11 +143,13 @@ if st.button("Analizar Sentimiento", type="primary"):
             st.subheader("Tu Modelo (DistilBERT - Local)")
             with st.spinner("Procesando con el modelo local..."):
                 slm_result = query_local_model(user_input)
-                st.markdown(f"**Análisis:**\n{slm_result}")
+                st.markdown(f"{slm_result}")
 
         with col2:
-            st.subheader("LLM (Zephyr 7B - Hugging Face API)")
+            st.subheader(f"LLM ({LLM_MODEL.split('/')[1]} - Hugging Face API)")
             with st.spinner("Consultando al LLM en la nube..."):
                 llm_result = query_llm_api(user_input)
-                st.markdown(f"**Análisis:**\n{llm_result}")
+                st.markdown(f"{llm_result}")
+
+st.markdown(f"### Modelos LLM recomendados:\n{llm_model_info}")                
         
