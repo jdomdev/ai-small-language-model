@@ -13,6 +13,9 @@ print(dataset["train"][0])
 print(dataset["test"][0])
 
 # Limitar el tamaño del dataset para entrenamiento y prueba
+# Para propósitos de entrenamiento rápido, limitamos el tamaño del dataset.
+# En un entorno real, usaríamos todo el dataset.
+print("\nLimitando el tamaño del dataset para entrenamiento y prueba...")
 train_size = 3000
 test_size = 1500
 dataset["train"] = dataset["train"].select(range(train_size))
