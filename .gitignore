@@ -79,3 +79,6 @@ build/
 .project
 .settings
 .classpath
+
+# Streamlit secrets
+.streamlit/
