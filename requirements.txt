@@ -3,3 +3,6 @@ datasets
 evaluate
 scikit-learn
 accelerate
+streamlit
+openai
+huggingface_hub

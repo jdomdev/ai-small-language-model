@@ -12,6 +12,16 @@ print("Dataset cargado. Ejemplos:")
 print(dataset["train"][0])
 print(dataset["test"][0])
 
+# Limitar el tamaño del dataset para entrenamiento y prueba
+# Para propósitos de entrenamiento rápido, limitamos el tamaño del dataset.
+# En un entorno real, usaríamos todo el dataset.
+print("\nLimitando el tamaño del dataset para entrenamiento y prueba...")
+train_size = 3000
+test_size = 1500
+dataset["train"] = dataset["train"].select(range(train_size))
+dataset["test"] = dataset["test"].select(range(test_size))
+print(f"Dataset limitado: {len(dataset['train'])} ejemplos de entrenamiento, {len(dataset['test'])} ejemplos de prueba.")
+
 # 2. Cargar el Tokenizador
 # Usaremos un tokenizador de un modelo pre-entrenado pequeño (DistilBERT)
 # que es eficiente y bueno para fine-tuning.
