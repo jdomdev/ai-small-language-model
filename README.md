@@ -45,6 +45,14 @@ solución más práctica, económica y eficiente que un LLM masivo.
 
 ---
 
+🚀 Despliegue en la Nube: SLM DistilBERT en Hugging Face Spaces
+
+Para una interacción directa con el modelo SLM DistilBERT entrenado, hemos desplegado una versión en la nube de Hugging Face Spaces. Esta interfaz te permite introducir reseñas de películas en inglés y observar el análisis de sentimiento realizado por el modelo.
+
+Accede al despliegue aquí: [https://huggingface.co/spaces/juancmamacias/ejemploSLM](https://huggingface.co/spaces/juancmamacias/ejemploSLM)
+
+---
+
 🚀 Guía de Usuario: ¡Manos a la Obra!
 
 Esta sección es CRÍTICA para que puedas poner en marcha el proyecto sin problemas. Sigue los pasos cuidadosamente.
@@ -297,3 +305,5 @@ Este proyecto está bajo la Licencia MIT. Consulta el archivo LICENSE para más 
     
   * Autor: Juan domingo
   * GitHub: (https://github.com/jdomdev)
+
+---
