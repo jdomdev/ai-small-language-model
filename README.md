@@ -45,11 +45,55 @@ solución más práctica, económica y eficiente que un LLM masivo.
 
 ---
 
-🚀 Despliegue en la Nube: SLM DistilBERT en Hugging Face Spaces
+## Despliegue en la Nube: Comparación SLM vs. LLM en Hugging Face Spaces
+
+Este proyecto cuenta con un despliegue interactivo en Hugging Face Spaces que permite comparar las predicciones de sentimiento de tres modelos diferentes: dos Small Language Models (SLM) y un Large Language Model (LLM).
+
+Puedes probar la aplicación aquí: [https://huggingface.co/spaces/jdomdev/imdb-slm-vs-llm-pill](https://huggingface.co/spaces/jdomdev/imdb-slm-vs-llm-pill)
+
+Visita mi perfil de Hugging Face para más proyectos: [https://huggingface.co/jdomdev](https://huggingface.co/jdomdev)
+
+### Modelos en Comparación
+
+La aplicación (`app.py`) expone los resultados de los siguientes modelos al introducir una reseña de película en inglés:
+
+1.  **Tu SLM Fine-tuned (jdomdev/imdb-slm-vs-llm-pill):** Un modelo DistilBERT afinado específicamente para análisis de sentimiento de reseñas de películas. Este modelo se carga directamente desde el Hugging Face Hub utilizando `transformers.pipeline`.
+2.  **SLM Estándar (distilbert-base-uncased-finetuned-sst-2-english):** Una versión pre-entrenada y estándar de DistilBERT, también cargada vía `transformers.pipeline`, que sirve como línea base para la comparación.
+3.  **LLM vía Hugging Face Inference API (meta-llama/Meta-Llama-3-8B-Instruct):** Un modelo de lenguaje grande (LLM) potente, consultado a través de la API de Inferencia de Hugging Face. Esto demuestra cómo integrar modelos de gran escala sin necesidad de cargarlos completamente en el entorno del Space.
+
+### Proceso de Despliegue en Hugging Face Spaces
+
+El despliegue de esta aplicación en Hugging Face Spaces siguió un proceso estructurado:
+
+1.  **Subida del Modelo Fine-tuned:** El modelo SLM afinado (`fine_tuned_sentiment_model_full_data/`) fue subido al Hugging Face Hub como un modelo independiente (`jdomdev/imdb-slm-vs-llm-pill`) utilizando un script personalizado (`scripts/upload_to_hf.py`). Este script se encarga de empaquetar el modelo y sus artefactos (como el tokenizador) y subirlos al Hub, permitiendo que sea accesible públicamente por su ID.
+2.  **Creación del Space:** Se creó un nuevo Space en Hugging Face, que actúa como un repositorio Git.
+3.  **Configuración del Entorno:**
+    *   Se subieron los archivos `requirements.txt` (especificando las dependencias de Python como `streamlit`, `transformers`, `torch`, `huggingface_hub`) y `app.py` (el código de la aplicación Streamlit).
+    *   Se configuró un "Secret" llamado `HUGGINGFACE_TOKEN` en los ajustes del Space. Este token es crucial para autenticarse y realizar llamadas a la API de Inferencia de Hugging Face de forma segura.
+    *   Se seleccionó el SDK de `Streamlit` para el Space, lo que permite a Hugging Face gestionar automáticamente el entorno de ejecución, la instalación de dependencias y el lanzamiento de la aplicación sin necesidad de un `Dockerfile` personalizado.
+    *   Se añadió la variable de entorno `HF_HOME: "./cache"` en la metadata del `README.md` del Space para asegurar que los modelos descargados se almacenen en un directorio con permisos de escritura adecuados dentro del contenedor.
+
+Este enfoque permite una comparación clara y directa de las capacidades de diferentes tipos de modelos para la tarea de análisis de sentimiento.
+
+## Despliegue en la Nube: SLM DistilBERT (Proyecto Complementario)
 
 Para una interacción directa con el modelo SLM DistilBERT entrenado, hemos desplegado una versión en la nube de Hugging Face Spaces. Esta interfaz te permite introducir reseñas de películas en inglés y observar el análisis de sentimiento realizado por el modelo.
 
 Accede al despliegue aquí: [https://huggingface.co/spaces/juancmamacias/ejemploSLM](https://huggingface.co/spaces/juancmamacias/ejemploSLM)
+
+Visita el perfil de Hugging Face de mi compañero Juan Carlos: [https://huggingface.co/juancmamacias](https://huggingface.co/juancmamacias)
+
+### Análisis del Despliegue Complementario
+
+El despliegue de Juan Carlos (`src/jc_app.py`) es una aplicación Streamlit que demuestra el uso de Small Language Models para tareas de Procesamiento de Lenguaje Natural. A diferencia del despliegue principal, este se enfoca en la comparación de modelos SLM y la inclusión de una funcionalidad de Question Answering.
+
+Los modelos expuestos en esta aplicación son:
+
+1.  **FLAN-T5 Small (google/flan-t5-small):** Un modelo de Question Answering que responde a preguntas basadas en el texto introducido.
+2.  **DistilBERT Base (distilbert-base-uncased-finetuned-sst-2-english):** Un modelo estándar de análisis de sentimiento que clasifica el texto como positivo o negativo.
+3.  **DistilBERT Fine-tuned (juancmamacias/jd-jcms):** Un modelo DistilBERT afinado por Juan Carlos para análisis de sentimiento, permitiendo comparar su rendimiento con la versión base.
+
+Esta aplicación utiliza `transformers.pipeline` para cargar y ejecutar todos los modelos directamente desde el Hugging Face Hub, ofreciendo una demostración clara de las capacidades de los SLM sin recurrir a la Inference API para LLMs.
 
 ---
 
@@ -301,9 +345,9 @@ Este proyecto está bajo la Licencia MIT. Consulta el archivo LICENSE para más 
 
 ¿Preguntas o sugerencias? No dudes en contactarnos:
   * Autor: Juan Carlos Macías
-  * Github: ((https://github.com/juancmacias)
+  * Github: (https://github.com/juancmacias)
     
-  * Autor: Juan domingo
+  * Autor: Juan Domingo
   * GitHub: (https://github.com/jdomdev)
 
 ---
