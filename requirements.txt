@@ -6,3 +6,9 @@ accelerate
 streamlit
 openai
 huggingface_hub
+aiohttp
+dotenv
+pipdeptree
+pipreqs
+tinycss2
+pip-tools
