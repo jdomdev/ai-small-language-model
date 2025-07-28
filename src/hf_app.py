@@ -1,6 +1,7 @@
 import streamlit as st
+import requests
 from transformers import pipeline
-from huggingface_hub import InferenceClient
+import os
 
 # --- Configuración de la Página ---
 st.set_page_config(
@@ -16,55 +17,49 @@ de diferentes modelos de Hugging Face.
 """)
 
 # --- Modelos a Comparar ---
+# Reemplaza 'tu-usuario/tu-modelo-slm' con el ID de tu modelo en el Hugging Face Hub
 YOUR_SLM_MODEL = "jdomdev/imdb-slm-vs-llm-pill"
+# Otro modelo SLM popular para comparar
 DISTILBERT_MODEL = "distilbert-base-uncased-finetuned-sst-2-english"
+# Un modelo LLM para la API de Inferencia
 INFERENCE_API_LLM = "meta-llama/Meta-Llama-3-8B-Instruct"
 
+
 # --- Carga de Modelos con Pipeline (en caché para eficiencia) ---
+# Streamlit guardará en caché los modelos para no tener que descargarlos cada vez.
 @st.cache_resource
 def load_pipeline(model_name):
     """Carga un pipeline de Hugging Face."""
-    st.info(f"Cargando el modelo pipeline: {model_name}...")
+    st.info(f"Cargando el modelo: {model_name}...")
     return pipeline("sentiment-analysis", model=model_name)
 
-# --- Implementación con InferenceClient (Tu método mejorado) ---
-
-@st.cache_resource
-def get_inference_client():
-    """Inicializa y cachea el InferenceClient."""
-    st.info(f"Inicializando cliente para: {INFERENCE_API_LLM}...")
+# --- Función para la API de Inferencia ---
+def query_inference_api(payload):
+    """Hace una petición a la API de Inferencia de Hugging Face."""
+    # Obtenemos el token de los secrets de Streamlit/Hugging Face
+    # hf_token = os.environ.get("HF_TOKEN")
+        # Obtenemos el token de los secrets de Streamlit/Hugging Face
     hf_token = st.secrets.get("HUGGINGFACE_TOKEN")
     if not hf_token:
-        st.error("Token de Hugging Face no encontrado. Por favor, configúralo en los 'Secrets' de tu Space.")
+        st.error("Hugging Face API token no encontrado. Por favor, configúralo en los 'Secrets' de tu Space.")
         return None
-    return InferenceClient(model=INFERENCE_API_LLM, token=hf_token)
 
-def query_inference_api(review: str):
-    """Consulta un LLM usando InferenceClient.chat_completion."""
-    client = get_inference_client()
-    if client is None:
-        return {"error": "No se pudo inicializar el cliente de Hugging Face."}
+    api_url = f"https://api-inference.huggingface.co/models/{INFERENCE_API_LLM}"
+    headers = {"Authorization": f"Bearer {hf_token}"}
 
-    try:
-        # Usamos el formato de mensajes que funciona para modelos de chat
-        messages = [
-            {"role": "system", "content": "You are a sentiment analysis expert. Analyze the sentiment of the user's movie review. Respond with only one word: POSITIVE or NEGATIVE."},
-            {"role": "user", "content": review}
-        ]
+    # Usamos un prompt específico para guiar al LLM
+    prompt = f"""Analyze the sentiment of the following movie review and classify it as either 'POSITIVE' or 
+ 'NEGATIVE'. Respond with only one word.
+ Review: "{payload['inputs']}"
+ Sentiment:"""
 
-        response = client.chat_completion(
-            messages=messages,
-            max_tokens=5,  # Suficiente para "POSITIVE" o "NEGATIVE"
-            temperature=0.1,
-        )
+    response = requests.post(api_url, headers=headers, json={"inputs": prompt, "parameters": {"max_new_tokens": 3}})
 
-        # Extraemos el contenido de la respuesta
-        sentiment = response.choices[0].message.content.strip().upper()
-        return {"label": sentiment}
-
-    except Exception as e:
-        st.error(f"Error al consultar el LLM: {e}")
-        return {"error": str(e)}
+    if response.status_code == 200:
+        return response.json()
+    else:
+        st.error(f"Error en la llamada a la API de Inferencia ({INFERENCE_API_LLM}): {response.status_code} - {response.text}")
+        return None
 
 # --- Interfaz de Usuario ---
 user_input = st.text_area("Escribe aquí la reseña de la película:", "I loved this movie, the acting was superb and the plot was gripping!", height=150)
@@ -73,6 +68,7 @@ if st.button("Analizar Sentimiento"):
     if user_input:
         st.subheader("Resultados del Análisis:")
 
+        # Creamos columnas para una mejor visualización
         col1, col2, col3 = st.columns(3)
 
         # 1. Tu modelo SLM afinado
@@ -91,12 +87,17 @@ if st.button("Analizar Sentimiento"):
                 result = distilbert_pipeline(user_input)
                 st.json(result)
 
-        # 3. LLM vía API de Inferencia con InferenceClient
+        # 3. LLM vía API de Inferencia
         with col3:
             st.info(f"LLM (API): `{INFERENCE_API_LLM}`")
             with st.spinner("Consultando al LLM..."):
-                result = query_inference_api(user_input)
-                st.json(result)
+                result = query_inference_api({"inputs": user_input})
+                if result:
+                    # El resultado de la API es más complejo, lo parseamos
+                    generated_text = result[0].get('generated_text', '').strip()
+                    # Extraemos la última palabra, que debería ser POSITIVE o NEGATIVE
+                    final_sentiment = generated_text.split()[-1]
+                    st.json({"label": final_sentiment.upper()})
 
     else:
         st.warning("Por favor, introduce una reseña para analizar.")
