@@ -39,7 +39,6 @@ Desktop.ini
 # Directories for model checkpoints, logs, and saved models
 results/
 logs/
-fine_tuned_sentiment_model/
 checkpoint-*/
 
 # Hugging Face cache directories (often large)
